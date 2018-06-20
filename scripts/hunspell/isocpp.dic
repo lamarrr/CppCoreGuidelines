@@ -84,8 +84,10 @@ clib
 Cline99
 ClosePort
 cm3
+cnt
 CommonMark
 *compiletime
+componentization
 composability
 composable
 conceptsTS
@@ -353,6 +355,7 @@ NR
 nullness
 nullptr
 NVI
+ofstream
 ok
 oo
 OO
@@ -407,6 +410,7 @@ Productinfo
 proto
 ps
 ptr
+ptrdiff
 Ptr
 ptr2
 ptr's
@@ -441,6 +445,8 @@ reseat
 reseating
 reseats
 resizable
+rethrow
+rethrowing
 retryable
 *re-use
 *re-usable
@@ -509,6 +515,7 @@ STL
 stmt
 str
 strdup
+stringlike
 strlen
 Str15
 Stroustrup

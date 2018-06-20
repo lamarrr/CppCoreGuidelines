@@ -1,6 +1,6 @@
 # <a name="main"></a>C++ Core Guidelines
 
-January 1, 2018
+April 16, 2018
 
 
 Editors:
@@ -8,7 +8,7 @@ Editors:
 * [Bjarne Stroustrup](http://www.stroustrup.com)
 * [Herb Sutter](http://herbsutter.com/)
 
-This document is an early draft. It's known to be incomplet, incorrekt, and has lots of b**a**d **for**~mat~ting.
+This is a living document under continuous improvement.
 Had it been an open-source (code) project, this would have been release 0.8.
 Copying, use, modification, and creation of derivative works from this project is licensed under an MIT-style license.
 Contributing to this project requires agreeing to a Contributor License. See the accompanying [LICENSE](LICENSE) file for details.
@@ -21,7 +21,7 @@ The list of contributors is [here](#SS-ack).
 
 Problems:
 
-* The sets of rules have not been thoroughly checked for completeness, consistency, or enforceability.
+* The sets of rules have not been completely checked for completeness, consistency, or enforceability.
 * Triple question marks (???) mark known missing information
 * Update reference sections; many pre-C++11 sources are too old.
 * For a more-or-less up-to-date to-do list see: [To-do: Unclassified proto-rules](#S-unclassified)
@@ -37,27 +37,27 @@ You can [read an explanation of the scope and structure of this Guide](#S-abstra
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
 * [Per: Performance](#S-performance)
-* [CP: Concurrency](#S-concurrency)
+* [CP: Concurrency and parallelism](#S-concurrency)
 * [E: Error handling](#S-errors)
 * [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
 * [CPL: C-style programming](#S-cpl)
 * [SF: Source files](#S-source)
-* [SL: The Standard library](#S-stdlib)
+* [SL: The Standard Library](#S-stdlib)
 
 Supporting sections:
 
-* [A: Architectural Ideas](#S-A)
-* [N: Non-Rules and myths](#S-not)
+* [A: Architectural ideas](#S-A)
+* [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
 * [Pro: Profiles](#S-profile)
 * [GSL: Guideline support library](#S-gsl)
-* [NL: Naming and layout](#S-naming)
+* [NL: Naming and layout rules](#S-naming)
 * [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
-* [Appendix D: Tools support](#S-tools)
+* [Appendix D: Supporting tools](#S-tools)
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
@@ -144,7 +144,7 @@ You can sample rules for specific language features:
 [when to use](#SS-lambdas)
 * operator:
 [conventional](#Ro-conventional) --
-[avoid conversion operators](#Ro-conventional) --
+[avoid conversion operators](#Ro-conversion) --
 [and lambdas](#Ro-lambda)
 * `public`, `private`, and `protected`:
 [information hiding](#Rc-private) --
@@ -187,7 +187,7 @@ You can look at design concepts used to express the rules:
 
 This document is a set of guidelines for using C++ well.
 The aim of this document is to help people to use modern C++ effectively.
-By "modern C++" we mean C++11 and C++14 (and soon C++17).
+By "modern C++" we mean C++17, C++14, and C++11.
 In other words, what would you like your code to look like in 5 years' time, given that you can start now? In 10 years' time?
 
 The guidelines are focused on relatively high-level issues, such as interfaces, resource management, memory management, and concurrency.
@@ -224,7 +224,7 @@ We plan to modify and extend this document as our understanding improves and the
 
 # <a name="S-introduction"></a>In: Introduction
 
-This is a set of core guidelines for modern C++, C++14, taking likely future enhancements and ISO Technical Specifications (TSs) into account.
+This is a set of core guidelines for modern C++, C++17, C++14, and C++11, taking likely future enhancements and ISO Technical Specifications (TSs) into account.
 The aim is to help C++ programmers to write simpler, more efficient, more maintainable code.
 
 Introduction summary:
@@ -242,7 +242,7 @@ All C++ programmers. This includes [programmers who might consider C](#S-cpl).
 
 ## <a name="SS-aims"></a>In.aims: Aims
 
-The purpose of this document is to help developers to adopt modern C++ (C++11, C++14, and soon C++17) and to achieve a more uniform style across code bases.
+The purpose of this document is to help developers to adopt modern C++ (C++17, C++14, and C++11) and to achieve a more uniform style across code bases.
 
 We do not suffer the delusion that every one of these rules can be effectively applied to every code base. Upgrading old systems is hard. However, we do believe that a program that uses a rule is less error-prone and more maintainable than one that does not. Often, rules also lead to faster/easier initial development.
 As far as we can tell, these rules lead to code that performs as well or better than older, more conventional techniques; they are meant to follow the zero-overhead principle ("what you don't use, you don't pay for" or "when you use an abstraction mechanism appropriately, you get at least as good performance as if you had handcoded using lower-level language constructs").
@@ -407,27 +407,28 @@ Recommended information sources can be found in [the references](#S-references).
 * [Enum: Enumerations](#S-enum)
 * [R: Resource management](#S-resource)
 * [ES: Expressions and statements](#S-expr)
+* [Per: Performance](#S-performance)
+* [CP: Concurrency and parallelism](#S-concurrency)
 * [E: Error handling](#S-errors)
 * [Con: Constants and immutability](#S-const)
 * [T: Templates and generic programming](#S-templates)
-* [CP: Concurrency](#S-concurrency)
-* [SL: The Standard library](#S-stdlib)
-* [SF: Source files](#S-source)
 * [CPL: C-style programming](#S-cpl)
-* [Pro: Profiles](#S-profile)
-* [GSL: Guideline support library](#S-gsl)
-* [FAQ: Answers to frequently asked questions](#S-faq)
+* [SF: Source files](#S-source)
+* [SL: The Standard Library](#S-stdlib)
 
 Supporting sections:
 
-* [NL: Naming and layout](#S-naming)
-* [Per: Performance](#S-performance)
-* [N: Non-Rules and myths](#S-not)
+* [A: Architectural ideas](#S-A)
+* [NR: Non-Rules and myths](#S-not)
 * [RF: References](#S-references)
+* [Pro: Profiles](#S-profile)
+* [GSL: Guideline support library](#S-gsl)
+* [NL: Naming and layout rules](#S-naming)
+* [FAQ: Answers to frequently asked questions](#S-faq)
 * [Appendix A: Libraries](#S-libraries)
 * [Appendix B: Modernizing code](#S-modernizing)
 * [Appendix C: Discussion](#S-discussion)
-* [Appendix D: Tools support](#S-tools)
+* [Appendix D: Supporting tools](#S-tools)
 * [Glossary](#S-glossary)
 * [To-do: Unclassified proto-rules](#S-unclassified)
 
@@ -480,14 +481,16 @@ What is expressed in code has defined semantics and can (in principle) be checke
 The first declaration of `month` is explicit about returning a `Month` and about not modifying the state of the `Date` object.
 The second version leaves the reader guessing and opens more possibilities for uncaught bugs.
 
-##### Example
+##### Example; bad
+
+This loop is a restricted form of `std::find`:
 
     void f(vector<string>& v)
     {
         string val;
         cin >> val;
         // ...
-        int index = -1;                    // bad
+        int index = -1;                    // bad, plus should use gsl::index
         for (int i = 0; i < v.size(); ++i) {
             if (v[i] == val) {
                 index = i;
@@ -497,7 +500,8 @@ The second version leaves the reader guessing and opens more possibilities for u
         // ...
     }
 
-That loop is a restricted form of `std::find`.
+##### Example; good
+
 A much clearer expression of intent would be:
 
     void f(vector<string>& v)
@@ -569,7 +573,7 @@ In such cases, control their (dis)use with an extension of these Coding Guidelin
 
 ##### Enforcement
 
-Use an up-to-date C++ compiler (currently C++11 or C++14) with a set of options that do not accept extensions.
+Use an up-to-date C++ compiler (currently C++17, C++14, or C++11) with a set of options that do not accept extensions.
 
 ### <a name="Rp-what"></a>P.3: Express intent
 
@@ -579,7 +583,7 @@ Unless the intent of some code is stated (e.g., in names or comments), it is imp
 
 ##### Example
 
-    int i = 0;
+    gsl::index i = 0;
     while (i < v.size()) {
         // ... do something with v[i] ...
     }
@@ -605,7 +609,7 @@ The last variant makes it clear that we are not interested in the order in which
 A programmer should be familiar with
 
 * [The guideline support library](#S-gsl)
-* [The ISO C++ standard library](#S-stdlib)
+* [The ISO C++ Standard Library](#S-stdlib)
 * Whatever foundation libraries are used for the current project(s)
 
 ##### Note
@@ -693,7 +697,7 @@ Or better still just use the type system and replace `Int` with `int32_t`.
     void read(int* p, int n);   // read max n integers into *p
 
     int a[100];
-    read(a, 1000);    // bad
+    read(a, 1000);    // bad, off the end
 
 better
 
@@ -974,9 +978,9 @@ However, relying on abstractions that implicitly clean up can be as simple, and 
 
 ##### Note
 
-Enforcing [the lifetime profile](#In.force) eliminates leaks.
+Enforcing [the lifetime profile](#SS-force) eliminates leaks.
 When combined with resource safety provided by [RAII](#Rr-raii), it eliminates the need for "garbage collection" (by generating no garbage).
-Combine this with enforcement of [the type and bounds profiles](#In.force) and you get complete type- and resource-safety, guaranteed by tools.
+Combine this with enforcement of [the type and bounds profiles](#SS-force) and you get complete type- and resource-safety, guaranteed by tools.
 
 ##### Enforcement
 
@@ -1011,16 +1015,16 @@ Time and space that you spend well to achieve a goal (e.g., speed of development
 
     X waste(const char* p)
     {
-        if (p == nullptr) throw Nullptr_error{};
+        if (!p) throw Nullptr_error{};
         int n = strlen(p);
         auto buf = new char[n];
-        if (buf == nullptr) throw Allocation_error{};
+        if (!buf) throw Allocation_error{};
         for (int i = 0; i < n; ++i) buf[i] = p[i];
         // ... manipulate buffer ...
         X x;
         x.ch = 'a';
         x.s = string(n);    // give x.s space for *p
-        for (int i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
+        for (gsl::index i = 0; i < x.s.size(); ++i) x.s[i] = buf[i];  // copy buf into x.s
         delete[] buf;
         return x;
     }
@@ -1068,7 +1072,7 @@ Something immutable cannot change unexpectedly.
 Sometimes immutability enables better optimization.
 You can't have a data race on a constant.
 
-See [Con: Constants and Immutability](#S-const)
+See [Con: Constants and immutability](#S-const)
 
 ### <a name="Rp-library"></a>P.11: Encapsulate messy constructs, rather than spreading through the code
 
@@ -1140,7 +1144,7 @@ See
 * [Concurrency tools](#Rconc-tools)
 * [Testing tools](???)
 
-There are many other kinds of tools, such as source code depositories, build tools, etc.,
+There are many other kinds of tools, such as source code repositories, build tools, etc.,
 but those are beyond the scope of these guidelines.
 
 ##### Note
@@ -1173,7 +1177,7 @@ You need a reason not to use the standard library (or whatever foundational libr
 
 By default use
 
-* The [ISO C++ standard library](#S-stdlib)
+* The [ISO C++ Standard Library](#S-stdlib)
 * The [Guidelines Support Library](#S-gsl)
 
 ##### Note
@@ -1210,7 +1214,7 @@ Interface rule summary:
 * [I.27: For stable library ABI, consider the Pimpl idiom](#Ri-pimpl)
 * [I.30: Encapsulate rule violations](#Ri-encapsulate)
 
-See also
+**See also**:
 
 * [F: Functions](#S-functions)
 * [C.concrete: Concrete types](#SS-concrete)
@@ -1307,6 +1311,10 @@ Every pointer or reference to mutable data is a potential data race.
 You cannot have a race condition on immutable data.
 
 **References**: See the [rules for calling functions](#SS-call).
+
+##### Note
+
+The rule is "avoid", not "don't use." Of course there will be (rare) exceptions, such as `cin`, `cout`, and `cerr`.
 
 ##### Enforcement
 
@@ -1495,7 +1503,7 @@ Ideally, that `Expects(x >= 0)` should be part of the interface of `sqrt()` but 
 
 ##### Note
 
-Prefer a formal specification of requirements, such as `Expects(p != nullptr);`.
+Prefer a formal specification of requirements, such as `Expects(p);`.
 If that is infeasible, use English text in comments, such as `// the sequence [p:q) is ordered using <`.
 
 ##### Note
@@ -1580,7 +1588,7 @@ Consider a famous security bug:
     {
         char buffer[MAX];
         // ...
-        memset(buffer, 0, MAX);
+        memset(buffer, 0, sizeof(buffer));
     }
 
 There was no postcondition stating that the buffer should be cleared and the optimizer eliminated the apparently redundant `memset()` call:
@@ -1589,7 +1597,7 @@ There was no postcondition stating that the buffer should be cleared and the opt
     {
         char buffer[MAX];
         // ...
-        memset(buffer, 0, MAX);
+        memset(buffer, 0, sizeof(buffer));
         Ensures(buffer[0] == 0);
     }
 
@@ -1697,9 +1705,9 @@ Use the ISO Concepts TS style of requirements specification. For example:
 ##### Note
 
 Soon (maybe in 2018), most compilers will be able to check `requires` clauses once the `//` is removed.
-For now, the concept TS is supported only in GCC 6.1 and later.
+Concepts are supported in GCC 6.1 and later.
 
-**See also**: [Generic programming](#SS-GP) and [concepts](#SS-t-concepts).
+**See also**: [Generic programming](#SS-GP) and [concepts](#SS-concepts).
 
 ##### Enforcement
 
@@ -1825,7 +1833,7 @@ caller, so that its lifetime is handled by the caller. Viewed another way:
 ownership transferring APIs are relatively rare compared to pointer-passing APIs,
 so the default is "no ownership transfer."
 
-**See also**: [Argument passing](#Rf-conventional), [use of smart pointer arguments](#Rr-smartptrparam), and [value return](#Rf-T-return).
+**See also**: [Argument passing](#Rf-conventional), [use of smart pointer arguments](#Rr-smartptrparam), and [value return](#Rf-value-return).
 
 ##### Enforcement
 
@@ -2112,11 +2120,13 @@ This will force every derived class to compute a center -- even if that's non-tr
 
     class Shape {    // better: Shape is a pure interface
     public:
-        virtual Point center() const = 0;   // pure virtual function
+        virtual Point center() const = 0;   // pure virtual functions
         virtual void draw() const = 0;
         virtual void rotate(int) = 0;
         // ...
         // ... no data members ...
+        // ...
+        virtual ~Shape() = default;
     };
 
 ##### Enforcement
@@ -2281,29 +2291,30 @@ Parameter passing expression rules:
 * [F.15: Prefer simple and conventional ways of passing information](#Rf-conventional)
 * [F.16: For "in" parameters, pass cheaply-copied types by value and others by reference to `const`](#Rf-in)
 * [F.17: For "in-out" parameters, pass by reference to non-`const`](#Rf-inout)
-* [F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
+* [F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter](#Rf-consume)
 * [F.19: For "forward" parameters, pass by `TP&&` and only `std::forward` the parameter](#Rf-forward)
 * [F.20: For "out" output values, prefer return values to output parameters](#Rf-out)
-* [F.21: To return multiple "out" values, prefer returning a tuple or struct](#Rf-out-multi)
+* [F.21: To return multiple "out" values, prefer returning a struct or tuple](#Rf-out-multi)
 * [F.60: Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
 
 Parameter passing semantic rules:
 
 * [F.22: Use `T*` or `owner<T*>` to designate a single object](#Rf-ptr)
-* [F.23: Use a `not_null<T>` to indicate "null" is not a valid value](#Rf-nullptr)
+* [F.23: Use a `not_null<T>` to indicate that "null" is not a valid value](#Rf-nullptr)
 * [F.24: Use a `span<T>` or a `span_p<T>` to designate a half-open sequence](#Rf-range)
 * [F.25: Use a `zstring` or a `not_null<zstring>` to designate a C-style string](#Rf-zstring)
 * [F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed](#Rf-unique_ptr)
 * [F.27: Use a `shared_ptr<T>` to share ownership](#Rf-shared_ptr)
 
-Value return semantic rules:
+<a name="Rf-value-return"></a>Value return semantic rules:
 
 * [F.42: Return a `T*` to indicate a position (only)](#Rf-return-ptr)
 * [F.43: Never (directly or indirectly) return a pointer or a reference to a local object](#Rf-dangle)
-* [F.44: Return a `T&` when copy is undesirable and "returning no object" isn't an option](#Rf-return-ref)
+* [F.44: Return a `T&` when copy is undesirable and "returning no object" isn't needed](#Rf-return-ref)
 * [F.45: Don't return a `T&&`](#Rf-return-ref-ref)
 * [F.46: `int` is the return type for `main()`](#Rf-main)
-* [F.47: Return `T&` from assignment operators.](#Rf-assignment-op)
+* [F.47: Return `T&` from assignment operators](#Rf-assignment-op)
+* [F.48: Don't `return std::move(local)`](#Rf-return-move-local)
 
 Other function rules:
 
@@ -2314,7 +2325,9 @@ Other function rules:
 * [F.54: If you capture `this`, capture all variables explicitly (no default capture)](#Rf-this-capture)
 * [F.55: Don't use `va_arg` arguments](#F-varargs)
 
-Functions have strong similarities to lambdas and function objects so see also [C.lambdas: Function objects and lambdas](#SS-lambdas).
+Functions have strong similarities to lambdas and function objects.
+
+**See also**: [C.lambdas: Function objects and lambdas](#SS-lambdas)
 
 ## <a name="SS-fct-def"></a>F.def: Function definitions
 
@@ -2365,12 +2378,12 @@ The shortest code is not always the best for performance or maintainability.
 
 Loop bodies, including lambdas used as loop bodies, rarely need to be named.
 However, large loop bodies (e.g., dozens of lines or dozens of pages) can be a problem.
-The rule [Keep functions short](#Rf-single) implies "Keep loop bodies short."
+The rule [Keep functions short and simple](#Rf-single) implies "Keep loop bodies short."
 Similarly, lambdas used as callback arguments are sometimes non-trivial, yet unlikely to be reusable.
 
 ##### Enforcement
 
-* See [Keep functions short](#Rf-single)
+* See [Keep functions short and simple](#Rf-single)
 * Flag identical and very similar lambdas used in different places.
 
 ### <a name="Rf-logical"></a>F.2: A function should perform a single logical operation
@@ -2633,7 +2646,7 @@ If an exception is not supposed to be thrown, the program cannot be assumed to c
 ##### Example
 
 Put `noexcept` on every function written completely in C or in any other language without exceptions.
-The C++ standard library does that implicitly for all functions in the C standard library.
+The C++ Standard Library does that implicitly for all functions in the C Standard Library.
 
 ##### Note
 
@@ -2726,9 +2739,10 @@ See further in [R.30](#Rr-smartptrparam).
 
 We can catch dangling pointers statically, so we don't need to rely on resource management to avoid violations from dangling pointers.
 
-**See also**: [when to prefer `T*` and when to prefer `T&`](#Rf-ptr-ref).
+**See also**:
 
-**See also**: Discussion of [smart pointer use](#Rr-summary-smartptrs).
+* [Prefer `T*` over `T&` when "no argument" is a valid option](#Rf-ptr-ref)
+* [Smart pointer rule summary](#Rr-summary-smartptrs)
 
 ##### Enforcement
 
@@ -2828,7 +2842,7 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
 
 * If the function is going to unconditionally move from the argument, take it by `&&`. See [F.18](#Rf-consume).
 * If the function is going to keep a copy of the argument, in addition to passing by `const&` (for lvalues),
-  add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "consume"; see [F.18](#Rf-consume).
+  add an overload that passes the parameter by `&&` (for rvalues) and in the body `std::move`s it to its destination. Essentially this overloads a "will-move-from"; see [F.18](#Rf-consume).
 * In special cases, such as multiple "input + copy" parameters, consider using perfect forwarding. See [F.19](#Rf-forward).
 
 ##### Example
@@ -2838,7 +2852,7 @@ For advanced uses (only), where you really need to optimize for rvalues passed t
     // suffix is input-only but not as cheap as an int, pass by const&
     string& concatenate(string&, const string& suffix);
 
-    void sink(unique_ptr<widget>);  // input only, and consumes the widget
+    void sink(unique_ptr<widget>);  // input only, and moves ownership of the widget
 
 Avoid "esoteric techniques" such as:
 
@@ -2911,7 +2925,7 @@ A bad logic error can happen if the writer of `g()` incorrectly assumes the size
 * (Moderate) ((Foundation)) Warn about functions regarding reference to non-`const` parameters that do *not* write to them.
 * (Simple) ((Foundation)) Warn when a non-`const` parameter being passed by reference is `move`d.
 
-### <a name="Rf-consume"></a>F.18: For "consume" parameters, pass by `X&&` and `std::move` the parameter
+### <a name="Rf-consume"></a>F.18: For "will-move-from" parameters, pass by `X&&` and `std::move` the parameter
 
 ##### Reason
 
@@ -3029,13 +3043,14 @@ The argument against is prevents (very frequent) use of move semantics.
 * Flag reference to non-`const` parameters that are not read before being written to and are a type that could be cheaply returned; they should be "out" return values.
 * Flag returning a `const` value. To fix: Remove `const` to return a non-`const` value instead.
 
-### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a tuple or struct
+### <a name="Rf-out-multi"></a>F.21: To return multiple "out" values, prefer returning a struct or tuple
 
 ##### Reason
 
 A return value is self-documenting as an "output-only" value.
 Note that C++ does have multiple return values, by convention of using a `tuple` (including `pair`),
 possibly with the extra convenience of `tie` at the call site.
+Prefer using a named struct where there are semantics to the returned value. Otherwise, a nameless `tuple` is useful in generic code.
 
 ##### Example
 
@@ -3098,7 +3113,7 @@ To compare, if we passed out all values as return values, we would something lik
     pair<istream&, string> get_string(istream& is);  // not recommended
     {
         string s;
-        cin >> s;
+        is >> s;
         return {is, s};
     }
 
@@ -3185,7 +3200,9 @@ better
 
 **Also**: Assume that a `T*` obtained from a smart pointer to `T` (e.g., `unique_ptr<T>`) points to a single element.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
+
+**See also**: [Do not pass an array as a single pointer](#Ri-array)
 
 ##### Enforcement
 
@@ -3207,7 +3224,7 @@ Consider:
 
     int length(Record* p);
 
-When I call `length(p)` should I test for `p == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
+When I call `length(p)` should I check if `p` is `nullptr` first? Should the implementation of `length()` check if `p` is `nullptr`?
 
     // it is the caller's job to make sure p != nullptr
     int length(not_null<Record*> p);
@@ -3260,7 +3277,7 @@ A `span` represents a range of elements, but how do we manipulate elements of th
         for (int x : s) cout << x << '\n';
 
         // C-style traversal (potentially checked)
-        for (int i = 0; i < s.size(); ++i) cout << s[i] << '\n';
+        for (gsl::index i = 0; i < s.size(); ++i) cout << s[i] << '\n';
 
         // random access (potentially checked)
         s[7] = 9;
@@ -3275,7 +3292,7 @@ A `span<T>` object does not own its elements and is so small that it can be pass
 
 Passing a `span` object as an argument is exactly as efficient as passing a pair of pointer arguments or passing a pointer and an integer count.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
 
 ##### Enforcement
 
@@ -3294,7 +3311,7 @@ Consider:
 
     int length(const char* p);
 
-When I call `length(s)` should I test for `s == nullptr` first? Should the implementation of `length()` test for `p == nullptr`?
+When I call `length(s)` should I check if `s` is `nullptr` first? Should the implementation of `length()` check if `p` is `nullptr`?
 
     // the implementor of length() must assume that p == nullptr is possible
     int length(zstring p);
@@ -3306,7 +3323,7 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 `zstring` do not represent ownership.
 
-**See also**: [Support library](#S-gsl).
+**See also**: [Support library](#S-gsl)
 
 ### <a name="Rf-unique_ptr"></a>F.26: Use a `unique_ptr<T>` to transfer ownership where a pointer is needed
 
@@ -3314,7 +3331,7 @@ When I call `length(s)` should I test for `s == nullptr` first? Should the imple
 
 Using `unique_ptr` is the cheapest way to pass a pointer safely.
 
-See also [C.50](#Rc-factory) regarding when to return a `shared_ptr` from a factory.
+**See also**: [C.50](#Rc-factory) regarding when to return a `shared_ptr` from a factory.
 
 ##### Example
 
@@ -3382,7 +3399,7 @@ Sometimes having `nullptr` as an alternative to indicated "no object" is useful,
 
     string zstring_to_string(zstring p) // zstring is a char*; that is a C-style string
     {
-        if (p == nullptr) return string{};    // p might be nullptr; remember to check
+        if (!p) return string{};    // p might be nullptr; remember to check
         return string{p};
     }
 
@@ -3415,7 +3432,7 @@ Returning a `T*` to transfer ownership is a misuse.
 
     Node* find(Node* t, const string& s)  // find s in a binary tree of Nodes
     {
-        if (t == nullptr || t->name == s) return t;
+        if (!t || t->name == s) return t;
         if ((auto p = find(t->left, s))) return p;
         if ((auto p = find(t->right, s))) return p;
         return nullptr;
@@ -3433,7 +3450,7 @@ A reference is often a superior alternative to a pointer [if there is no need to
 
 Do not return a pointer to something that is not in the caller's scope; see [F.43](#Rf-dangle).
 
-**See also**: [discussion of dangling pointer prevention](#???).
+**See also**: [discussion of dangling pointer prevention](#???)
 
 ##### Enforcement
 
@@ -3565,7 +3582,7 @@ The language guarantees that a `T&` refers to an object, so that testing for `nu
         array<wheel, 4> w;
         // ...
     public:
-        wheel& get_wheel(size_t i) { Expects(i < w.size()); return w[i]; }
+        wheel& get_wheel(int i) { Expects(i < w.size()); return w[i]; }
         // ...
     };
 
@@ -3673,6 +3690,34 @@ This was primarily to avoid code of the form `(a = b) = c` -- such code is not c
 
 This should be enforced by tooling by checking the return type (and return
 value) of any assignment operator.
+
+
+### <a name="Rf-return-move-local"></a>F.48: Don't `return std::move(local)`
+
+##### Reason
+
+With guaranteed copy elision, it is now almost always a pessimization to expressly use `std::move` in a return statement.
+
+##### Example; bad
+
+    S f()
+    {
+      S result;
+      return std::move(result);
+    }
+
+##### Example; good
+
+    S f()
+    {
+      S result;
+      return result;
+    }
+
+##### Enforcement
+
+This should be enforced by tooling by checking the return expression .
+
 
 ### <a name="Rf-capture-vs-overload"></a>F.50: Use a lambda when a function won't do (to capture local variables, or to write a local function)
 
@@ -3899,7 +3944,7 @@ Declaring a `...` parameter is sometimes useful for techniques that don't involv
 * Issue a diagnostic for using `va_list`, `va_start`, or `va_arg`.
 * Issue a diagnostic for passing an argument to a vararg parameter of a function that does not offer an overload for a more specific type in the position of the vararg. To fix: Use a different function, or `[[suppress(types)]]`.
 
-# <a name="S-class"></a>C: Classes and Class Hierarchies
+# <a name="S-class"></a>C: Classes and class hierarchies
 
 A class is a user-defined type, for which a programmer can define the representation, operations, and interfaces.
 Class hierarchies are used to organize related classes into hierarchical structures.
@@ -3992,10 +4037,12 @@ If a class has any `private` data, a user cannot completely initialize an object
 Hence, the class definer will provide a constructor and must specify its meaning.
 This effectively means the definer need to define an invariant.
 
-* See also [define a class with private data as `class`](#Rc-class).
-* See also [Prefer to place the interface first in a class](#Rl-order).
-* See also [minimize exposure of members](#Rc-private).
-* See also [Avoid `protected` data](#Rh-protected).
+**See also**:
+
+* [define a class with private data as `class`](#Rc-class)
+* [Prefer to place the interface first in a class](#Rl-order)
+* [minimize exposure of members](#Rc-private)
+* [Avoid `protected` data](#Rh-protected)
 
 ##### Enforcement
 
@@ -4072,8 +4119,9 @@ The language requires operators `=`, `()`, `[]`, and `->` to be members.
 An overload set may have some members that do not directly access `private` data:
 
     class Foobar {
-        void foo(int x)    { /* manipulate private data */ }
-        void foo(double x) { foo(std::round(x)); }
+    public:
+        void foo(long x)    { /* manipulate private data */ }
+        void foo(double x) { foo(std::lround(x)); }
         // ...
     private:
         // ...
@@ -4211,7 +4259,7 @@ For example:
         // ...
     private:
         double magnitude;
-        double unit;    // 1 is meters, 1000 is kilometers, 0.0001 is millimeters, etc.
+        double unit;    // 1 is meters, 1000 is kilometers, 0.001 is millimeters, etc.
     };
 
 ##### Note
@@ -4400,7 +4448,7 @@ Constructor rules:
 * [C.40: Define a constructor if a class has an invariant](#Rc-ctor)
 * [C.41: A constructor should create a fully initialized object](#Rc-complete)
 * [C.42: If a constructor cannot construct a valid object, throw an exception](#Rc-throw)
-* [C.43: Ensure that a value type class has a default constructor](#Rc-default0)
+* [C.43: Ensure that a copyable (value type) class has a default constructor](#Rc-default0)
 * [C.44: Prefer default constructors to be simple and non-throwing](#Rc-default00)
 * [C.45: Don't define a default constructor that only initializes data members; use member initializers instead](#Rc-default)
 * [C.46: By default, declare single-argument constructors `explicit`](#Rc-explicit)
@@ -4473,7 +4521,21 @@ For example, a class with a (pointer, size) pair of member and a destructor that
 
 ##### Reason
 
-The semantics of the special functions are closely related, so if one needs to be non-default, the odds are that others need modification too.
+The *special member functions* are the default constructor, copy constructor,
+copy assignment operator, move constructor, move assignment operator, and
+destructor.
+
+The semantics of the special functions are closely related, so if one needs to be declared, the odds are that others need consideration too.
+
+Declaring any special member function except a default constructor,
+even as `=default` or `=delete`, will suppress the implicit declaration
+of a move constructor and move assignment operator.
+Declaring a move constructor or move assignment operator, even as
+`=default` or `=delete`, will cause an implicitly generated copy constructor
+or implicitly generated copy assignment operator to be defined as deleted.
+So as soon as any of the special functions is declared, the others should
+all be declared to avoid unwanted effects like turning all potential moves
+into more expensive copies, or making a class move-only.
 
 ##### Example, bad
 
@@ -4505,6 +4567,39 @@ This is known as "the rule of five" or "the rule of six", depending on whether y
 
 If you want a default implementation of a default operation (while defining another), write `=default` to show you're doing so intentionally for that function.
 If you don't want a default operation, suppress it with `=delete`.
+
+##### Example, good
+
+When a destructor needs to be declared just to make it `virtual`, it can be
+defined as defaulted. To avoid suppressing the implicit move operations
+they must also be declared, and then to avoid the class becoming move-only
+(and not copyable) the copy operations must be declared:
+
+    class AbstractBase {
+    public:
+      virtual ~AbstractBase() = default;
+      AbstractBase(const AbstractBase&) = default;
+      AbstractBase& operator=(const AbstractBase&) = default;
+      AbstractBase(AbstractBase&&) = default;
+      AbstractBase& operator=(AbstractBase&&) = default;
+    };
+
+Alternatively to prevent slicing as per [C.67](#Rc-copy-virtual),
+the copy and move operations can all be deleted:
+
+    class ClonableBase {
+    public:
+      virtual unique_ptr<ClonableBase> clone() const;
+      virtual ~ClonableBase() = default;
+      ClonableBase(const ClonableBase&) = delete;
+      ClonableBase& operator=(const ClonableBase&) = delete;
+      ClonableBase(ClonableBase&&) = delete;
+      ClonableBase& operator=(ClonableBase&&) = delete;
+    };
+
+Defining only the move operations or only the copy operations would have the
+same effect here, but stating the intent explicitly for each special member
+makes it more obvious to the reader.
 
 ##### Note
 
@@ -5007,13 +5102,13 @@ Leaving behind an invalid object is asking for trouble.
 ##### Example
 
     class X2 {
-        FILE* f;   // call init() before any other function
+        FILE* f;
         // ...
     public:
         X2(const string& name)
             :f{fopen(name.c_str(), "r")}
         {
-            if (f == nullptr) throw runtime_error{"could not open" + name};
+            if (!f) throw runtime_error{"could not open" + name};
             // ...
         }
 
@@ -5031,7 +5126,7 @@ Leaving behind an invalid object is asking for trouble.
 ##### Example, bad
 
     class X3 {     // bad: the constructor leaves a non-valid object behind
-        FILE* f;   // call init() before any other function
+        FILE* f;   // call is_valid() before any other function
         bool valid;
         // ...
     public:
@@ -5081,23 +5176,22 @@ If you really have to, look at [factory functions](#Rc-factory).
 
 One reason people have used `init()` functions rather than doing the initialization work in a constructor has been to avoid code replication.
 [Delegating constructors](#Rc-delegating) and [default member initialization](#Rc-in-class-initializer) do that better.
-Another reason is been to delay initialization until an object is needed; the solution to that is often [not to declare a variable until it can be properly initialized](#Res-init)
+Another reason has been to delay initialization until an object is needed; the solution to that is often [not to declare a variable until it can be properly initialized](#Res-init)
 
 ##### Enforcement
 
 ???
 
-### <a name="Rc-default0"></a>C.43: Ensure that a value type class has a default constructor
+### <a name="Rc-default0"></a>C.43: Ensure that a copyable (value type) class has a default constructor
 
 ##### Reason
 
 Many language and library facilities rely on default constructors to initialize their elements, e.g. `T a[10]` and `std::vector<T> v(10)`.
-A default constructor often simplifies the task of defining a suitable [moved-from state](#???).
+A default constructor often simplifies the task of defining a suitable [moved-from state](#???) for a type that is also copyable.
 
 ##### Note
 
-We have not (yet) formally defined [value type](#SS-concrete), but think of it as a class that behaves much as an `int`:
-it can be copied using `=` and usually compared using `==`.
+A [value type](#SS-concrete) is a class that is copyable (and usually also comparable).
 It is closely related to the notion of Regular type from [EoP](http://elementsofprogramming.com/) and [the Palo Alto TR](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf).
 
 ##### Example
@@ -5169,41 +5263,47 @@ Assuming that you want initialization, an explicit default initialization can he
         int i {};   // default initialize (to 0)
     };
 
-##### Example
+##### Notes
 
-There are classes that simply don't have a reasonable default.
+Classes that don't have a reasonable default construction are usually not copyable either, so they don't fall under this guideline.
 
-A class designed to be useful only as a base does not need a default constructor because it cannot be constructed by itself:
+For example, a base class is not a value type (base classes should not be copyable) and so does not necessarily need a default constructor:
 
-    struct Shape {  // pure interface: all members are pure virtual functions
-            void draw() = 0;
-            void rotate(int) = 0;
-            // ...
+    // Shape is an abstract base class, not a copyable value type.
+    // It may or may not need a default constructor.
+    struct Shape {
+        virtual void draw() = 0;
+        virtual void rotate(int) = 0;
+        // =delete copy/move functions
+        // ...
     };
 
-A class that must acquire a resource during construction:
+A class that must acquire a caller-provided resource during construction often cannot have a default constructor, but it does not fall under this guideline because such a class is usually not copyable anyway:
 
+    // std::lock_guard is not a copyable value type.
+    // It does not have a default constructor.
     lock_guard g {mx};  // guard the mutex mx
     lock_guard g2;      // error: guarding nothing
 
-##### Note
-
 A class that has a "special state" that must be handled separately from other states by member functions or users causes extra work
-(and most likely more errors). For example
+(and most likely more errors). Such a type can naturally use the special state as a default constructed value, whether or not it is copyable:
 
+    // std::ofstream is not a copyable value type.
+    // It does happen to have a default constructor
+    // that goes along with a special "not open" state.
     ofstream out {"Foobar"};
     // ...
     out << log(time, transaction);
 
-If `Foobar` couldn't be opened for writing and `out` wasn't set to throw exceptions upon errors, the output operations become no-ops.
-The implementation must take care of that case, and users must remember to test for success.
+Similar special-state types that are copyable, such as copyable smart pointers that have the special state "==nullptr", should use the special state as their default constructed value.
 
-Pointers, even smart pointers, that can point to nothing (null pointers) are an example of this.
-Having a default constructor is not a panacea; ideally it defaults to a meaningful state such as `std::string`s `""` and `std::vector`s `{}`.
+However, it is preferable to have a default constructor default to a meaningful state such as `std::string`s `""` and `std::vector`s `{}`.
 
 ##### Enforcement
 
-* Flag classes that are copyable by `=` or comparable with `==` without a default constructor
+* Flag classes that are copyable by `=` without a default constructor
+* Flag classes that are comparable with `==` but not copyable
+
 
 ### <a name="Rc-default00"></a>C.44: Prefer default constructors to be simple and non-throwing
 
@@ -5228,7 +5328,7 @@ Being able to set a value to "the default" without operations that might fail si
 
 This is nice and general, but setting a `Vector0` to empty after an error involves an allocation, which may fail.
 Also, having a default `Vector` represented as `{new T[0], 0, 0}` seems wasteful.
-For example, `Vector0 v(100)` costs 100 allocations.
+For example, `Vector0<int> v[100]` costs 100 allocations.
 
 ##### Example
 
@@ -5313,7 +5413,11 @@ If you really want an implicit conversion from the constructor argument type to 
 
     Complex z = 10.7;   // unsurprising conversion
 
-**See also**: [Discussion of implicit conversions](#Ro-conversion).
+**See also**: [Discussion of implicit conversions](#Ro-conversion)
+
+##### Note
+
+Copy and move constructors should not be made `explicit` because they do not perform conversions. Explicit copy/move constructors make passing and returning by value difficult.
 
 ##### Enforcement
 
@@ -5687,9 +5791,9 @@ After a copy `x` and `y` can be independent objects (value semantics, the way no
     class X2 {  // OK: pointer semantics
     public:
         X2();
-        X2(const X&) = default; // shallow copy
+        X2(const X2&) = default; // shallow copy
         ~X2() = default;
-        void modify();          // change the value of X
+        void modify();          // change the pointed-to value
         // ...
     private:
         T* p;
@@ -6090,7 +6194,7 @@ A `unique_ptr` can be moved, but not copied. To achieve that its copy operations
         auto pi3 {make()};  // OK, move: the result of make() is an rvalue
     }
 
-Note that deleted methods should be public.
+Note that deleted functions should be public.
 
 ##### Enforcement
 
@@ -6702,7 +6806,7 @@ The importance of keeping the two kinds of inheritance increases
         virtual void redraw();
 
         // ...
-    public:
+    private:
         Point cent;
         Color col;
     };
@@ -7492,7 +7596,7 @@ Contrast with [C.147](#Rh-ptr-cast), where failure is an error, and should not b
 
 ##### Example
 
-The example below describes the `add` method of a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
+The example below describes the `add` function of a `Shape_owner` that takes ownership of constructed `Shape` objects. The objects are also sorted into views, according to their geometric attributes.
 In this example, `Shape` does not inherit from `Geometric_attributes`. Only its subclasses do.
 
     void add(Shape* const item)
@@ -8416,7 +8520,7 @@ Convenience of use and avoidance of errors.
     {
         return d = (d == Day::sun) ? Day::mon : static_cast<Day>(static_cast<int>(d)+1);
     }
-    
+
     Day today = Day::sat;
     Day tomorrow = ++today;
 
@@ -8495,9 +8599,9 @@ The default is the easiest to read and write.
     enum class Direction : char { n, s, e, w,
                                   ne, nw, se, sw };  // underlying type saves space
 
-    enum class Web_color : int { red   = 0xFF0000,
-                                 green = 0x00FF00,
-                                 blue  = 0x0000FF };  // underlying type is redundant
+    enum class Web_color : int32_t { red   = 0xFF0000,
+                                     green = 0x00FF00,
+                                     blue  = 0x0000FF };  // underlying type is redundant
 
 ##### Note
 
@@ -8649,7 +8753,7 @@ What is `Port`? A handy wrapper that encapsulates the resource:
 
 Where a resource is "ill-behaved" in that it isn't represented as a class with a destructor, wrap it in a class or use [`finally`](#Re-finally)
 
-**See also**: [RAII](#Rr-raii).
+**See also**: [RAII](#Rr-raii)
 
 ### <a name="Rr-use-ptr"></a>R.2: In interfaces, use raw pointers to denote individual objects (only)
 
@@ -8685,7 +8789,7 @@ Use `zstring` rather than `char*` to indicate that you rely on that convention.
 ##### Note
 
 Many current uses of pointers to a single element could be references.
-However, where `nullptr` is a possible value, a reference may not be an reasonable alternative.
+However, where `nullptr` is a possible value, a reference may not be a reasonable alternative.
 
 ##### Enforcement
 
@@ -9151,7 +9255,35 @@ be able to destroy a cyclic structure.
 
 ##### Example
 
-    ???
+    #include <memory>
+
+    class bar;
+
+    class foo
+    {
+    public:
+      explicit foo(const std::shared_ptr<bar>& forward_reference)
+        : forward_reference_(forward_reference)
+      { }
+    private:
+      std::shared_ptr<bar> forward_reference_;
+    };
+
+    class bar
+    {
+    public:
+      explicit bar(const std::weak_ptr<foo>& back_reference)
+        : back_reference_(back_reference)
+      { }
+      void do_something()
+      {
+        if (auto shared_back_reference = back_reference_.lock()) {
+          // Use *shared_back_reference
+        }
+      }
+    private:
+      std::weak_ptr<foo> back_reference_;
+    };
 
 ##### Note
 
@@ -9253,7 +9385,7 @@ Using `unique_ptr` in this way both documents and enforces the function call's o
 
 ##### Example
 
-    void sink(unique_ptr<widget>); // consumes the widget
+    void sink(unique_ptr<widget>); // takes ownership of the widget
 
     void uses(widget*);            // just uses the widget
 
@@ -9414,7 +9546,7 @@ The fix is simple -- take a local copy of the pointer to "keep a ref count" for 
 
 * (Simple) Warn if a pointer or reference obtained from a smart pointer variable (`Unique_ptr` or `Shared_ptr`) that is nonlocal, or that is local but potentially aliased, is used in a function call. If the smart pointer is a `Shared_ptr` then suggest taking a local copy of the smart pointer and obtain a pointer or reference from that instead.
 
-# <a name="S-expr"></a>ES: Expressions and Statements
+# <a name="S-expr"></a>ES: Expressions and statements
 
 Expressions and statements are the lowest and most direct way of expressing actions and computation. Declarations in local scopes are statements.
 
@@ -9498,14 +9630,14 @@ Arithmetic rules:
 * [ES.104: Don't underflow](#Res-underflow)
 * [ES.105: Don't divide by zero](#Res-zero)
 * [ES.106: Don't try to avoid negative values by using `unsigned`](#Res-nonnegative)
-* [ES.107: Don't use `unsigned` for subscripts](#Res-subscripts)
+* [ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`](#Res-subscripts)
 
 ### <a name="Res-lib"></a>ES.1: Prefer the standard library to other libraries and to "handcrafted code"
 
 ##### Reason
 
 Code using a library can be much easier to write than code working directly with language features, much shorter, tend to be of a higher level of abstraction, and the library code is presumably already tested.
-The ISO C++ standard library is among the most widely known and best tested libraries.
+The ISO C++ Standard Library is among the most widely known and best tested libraries.
 It is available as part of all C++ Implementations.
 
 ##### Example
@@ -9694,7 +9826,7 @@ Conventional short, local names increase readability:
     template<typename T>    // good
     void print(ostream& os, const vector<T>& v)
     {
-        for (int i = 0; i < v.size(); ++i)
+        for (gsl::index i = 0; i < v.size(); ++i)
             os << v[i] << '\n';
     }
 
@@ -9703,9 +9835,9 @@ An index is conventionally called `i` and there is no hint about the meaning of 
     template<typename Element_type>   // bad: verbose, hard to read
     void print(ostream& target_stream, const vector<Element_type>& current_vector)
     {
-        for (int current_element_index = 0;
-                current_element_index < current_vector.size();
-                ++current_element_index
+        for (gsl::index current_element_index = 0;
+             current_element_index < current_vector.size();
+             ++current_element_index
         )
         target_stream << current_vector[current_element_index] << '\n';
     }
@@ -9880,7 +10012,6 @@ Flag variable and constant declarations with multiple declarators (e.g., `int* p
 Consider:
 
     auto p = v.begin();   // vector<int>::iterator
-    auto s = v.size();
     auto h = t.future();
     auto q = make_unique<int[]>(s);
     auto f = [](int x){ return x + 10; };
@@ -10137,7 +10268,7 @@ In the not uncommon case where the input target and the input operation get sepa
 
     int i2 = 0;   // better
     // ...
-    cin >> i;
+    cin >> i2;
 
 A good optimizer should know about input operations and eliminate the redundant operation.
 
@@ -10472,7 +10603,7 @@ It nicely encapsulates local initialization, including cleaning up scratch varia
 ##### Example, bad
 
     widget x;   // should be const, but:
-    for (auto i = 2; i <= N; ++i) {             // this could be some
+    for (auto i = 2; i <= N; ++i) {          // this could be some
         x += some_obj.do_something_with(i);  // arbitrarily long code
     }                                        // needed to initialize x
     // from here, x should be const, but we can't say so in code in this style
@@ -10608,7 +10739,7 @@ Requires messy cast-and-macro-laden code to get working right.
         for (;;) {
             // treat the next var as a char*; no checking: a cast in disguise
             char* p = va_arg(ap, char*);
-            if (p == nullptr) break;
+            if (!p) break;
             cerr << p << ' ';
         }
 
@@ -10812,13 +10943,13 @@ Access into an array with known bounds using a constant as a subscript can be va
 
     void f(span<int> a) // BETTER: use span in the function declaration
     {
-        if (a.length() < 2) return;
+        if (a.size() < 2) return;
 
         int n = a[0];      // OK
 
         span<int> q = a.subspan(1); // OK
 
-        if (a.length() < 6) return;
+        if (a.size() < 6) return;
 
         a[4] = 1;          // OK
 
@@ -10955,8 +11086,8 @@ If you want to pass an array, say so:
         int a[5];
         span<int> av = a;
 
-        g(av.data(), av.length());   // OK, if you have no choice
-        g1(a);                       // OK -- no decay here, instead use implicit span ctor
+        g(av.data(), av.size());   // OK, if you have no choice
+        g1(a);                     // OK -- no decay here, instead use implicit span ctor
     }
 
 ##### Enforcement
@@ -11152,7 +11283,7 @@ Surprised? I'm just glad I didn't crash the program.
 
 ##### Note
 
-Programmers who write casts typically assume that they know what they are doing, 
+Programmers who write casts typically assume that they know what they are doing,
 or that writing a cast makes the program "easier to read".
 In fact, they often disable the general rules for using values.
 Overload resolution and template instantiation usually pick the right function if there is a right function to pick.
@@ -11577,7 +11708,7 @@ also known as "No naked `new`!"
 
 There can be code in the `...` part that causes the `delete` never to happen.
 
-**See also**: [R: Resource management](#S-resource).
+**See also**: [R: Resource management](#S-resource)
 
 ##### Enforcement
 
@@ -11775,7 +11906,7 @@ This rule is an obvious and well-known language rule, but can be hard to follow.
 It takes good coding style, library support, and static analysis to eliminate violations without major overhead.
 This is a major part of the discussion of [C++'s resource- and type-safety model](#Stroustrup15).
 
-See also
+**See also**:
 
 * Use [RAII](#Rr-raii) to avoid lifetime problems.
 * Use [unique_ptr](#Rf-unique_ptr) to avoid lifetime problems.
@@ -11831,7 +11962,7 @@ There are many approaches to dealing with this potential problem:
 
     void f1(int* p) // deal with nullptr
     {
-        if (p == nullptr) {
+        if (!p) {
             // deal with nullptr (allocate, return, throw, make p point to something, whatever
         }
         int x = *p;
@@ -11846,7 +11977,7 @@ There are two potential problems with testing for `nullptr`:
 
     void f2(int* p) // state that p is not supposed to be nullptr
     {
-        assert(p != nullptr);
+        assert(p);
         int x = *p;
     }
 
@@ -11854,7 +11985,7 @@ This would carry a cost only when the assertion checking was enabled and would g
 This would work even better if/when C++ gets direct support for contracts:
 
     void f3(int* p) // state that p is not supposed to be nullptr
-        [[expects: p != nullptr]]
+        [[expects: p]]
     {
         int x = *p;
     }
@@ -11947,7 +12078,7 @@ Readability. Error prevention. Efficiency.
 
 ##### Example
 
-    for (int i = 0; i < v.size(); ++i)   // bad
+    for (gsl::index i = 0; i < v.size(); ++i)   // bad
             cout << v[i] << '\n';
 
     for (auto p = v.begin(); p != v.end(); ++p)   // bad
@@ -11956,13 +12087,13 @@ Readability. Error prevention. Efficiency.
     for (auto& x : v)    // OK
         cout << x << '\n';
 
-    for (int i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
+    for (gsl::index i = 1; i < v.size(); ++i) // touches two elements: can't be a range-for
         cout << v[i] + v[i - 1] << '\n';
 
-    for (int i = 0; i < v.size(); ++i) // possible side effect: can't be a range-for
+    for (gsl::index i = 0; i < v.size(); ++i) // possible side effect: can't be a range-for
         cout << f(v, &v[i]) << '\n';
 
-    for (int i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
+    for (gsl::index i = 0; i < v.size(); ++i) { // body messes with loop variable: can't be a range-for
         if (i % 2 == 0)
             continue;   // skip even elements
         else
@@ -11999,7 +12130,7 @@ Readability: the complete logic of the loop is visible "up front". The scope of 
 
 ##### Example
 
-    for (int i = 0; i < vec.size(); i++) {
+    for (gsl::index i = 0; i < vec.size(); i++) {
         // do work
     }
 
@@ -12455,7 +12586,7 @@ It has been noted that
 
 is a common beginners error.
 If you use C-style strings, you must know the `<cstring>` functions well.
-Being verbose and writing 
+Being verbose and writing
 
     if(strcmp(p1, p2) != 0) { ... }   // are the two C-style strings equal? (mistake!)
 
@@ -12467,7 +12598,7 @@ The opposite condition is most easily expressed using a negation:
 
     // These all mean "if `p` is `nullptr`"
     if (!p) { ... }           // good
-    if (p == 0) { ... }       // redundant `!= 0`; bad: don't use `0` for pointers
+    if (p == 0) { ... }       // redundant `== 0`; bad: don't use `0` for pointers
     if (p == nullptr) { ... } // redundant `== nullptr`, not recommended
 
 ##### Enforcement
@@ -12498,11 +12629,13 @@ It is harder to spot the problem in more realistic examples.
 ##### Note
 
 Unfortunately, C++ uses signed integers for array subscripts and the standard library uses unsigned integers for container subscripts.
-This precludes consistency.
+This precludes consistency. Use `gsl::index` for subscripts; [see ES.107](#Res-subscripts).
 
 ##### Enforcement
 
-Compilers already know and sometimes warn.
+* Compilers already know and sometimes warn.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is `sizeof` or a call to container `.size()` and the other is `ptrdiff_t`.
+
 
 ### <a name="Res-unsigned"></a>ES.101: Use unsigned types for bit manipulation
 
@@ -12569,25 +12702,29 @@ is going to be surprising for many programmers.
 ##### Example
 
 The standard library uses unsigned types for subscripts.
-The build-in array uses signed types for subscripts.
+The built-in array uses signed types for subscripts.
 This makes surprises (and bugs) inevitable.
 
     int a[10];
     for (int i = 0; i < 10; ++i) a[i] = i;
     vector<int> v(10);
-    // compares signed to unsigned; some compilers warn
-    for (int i = 0; v.size() < 10; ++i) v[i] = i;
+    // compares signed to unsigned; some compilers warn, but we should not
+    for (gsl::index i = 0; i < v.size(); ++i) v[i] = i;
 
     int a2[-2];         // error: negative size
 
     // OK, but the number of ints (4294967294) is so large that we should get an exception
     vector<int> v2(-2);
 
+ Use `gsl::index` for subscripts; [see ES.107](#Res-subscripts).
+
 ##### Enforcement
 
 * Flag mixed signed and unsigned arithmetic
 * Flag results of unsigned arithmetic assigned to or printed as signed.
 * Flag unsigned literals (e.g. `-2`) used as container subscripts.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is `sizeof` or a call to container `.size()` and the other is `ptrdiff_t`.
+
 
 ### <a name="Res-overflow"></a>ES.103: Don't overflow
 
@@ -12751,33 +12888,47 @@ For example
 Hard: there is a lot of code using `unsigned` and we don't offer a practical positive number type.
 
 
-### <a name="Res-subscripts"></a>ES.107: Don't use `unsigned` for subscripts
+### <a name="Res-subscripts"></a>ES.107: Don't use `unsigned` for subscripts, prefer `gsl::index`
 
 ##### Reason
 
 To avoid signed/unsigned confusion.
 To enable better optimization.
 To enable better error detection.
+To avoid the pitfalls with `auto` and `int`.
 
 ##### Example, bad
 
-    vector<int> vec {1, 2, 3, 4, 5};
+    vector<int> vec = /*...*/;
 
-    for (int i = 0; i < vec.size(); i += 2)                    // mix int and unsigned
+    for (int i = 0; i < vec.size(); i += 2)                    // may not be big enough
         cout << vec[i] << '\n';
     for (unsigned i = 0; i < vec.size(); i += 2)               // risk wraparound
         cout << vec[i] << '\n';
+    for (auto i = 0; i < vec.size(); i += 2)                   // may not be big enough
+        cout << vec[i] << '\n';
     for (vector<int>::size_type i = 0; i < vec.size(); i += 2) // verbose
         cout << vec[i] << '\n';
-    for (auto i = 0; i < vec.size(); i += 2)                   // mix int and unsigned
+    for (auto i = vec.size()-1; i >= 0; i -= 2)                // bug
+        cout << vec[i] << '\n';
+    for (int i = vec.size()-1; i >= 0; i -= 2)                 // may not be big enough
+        cout << vec[i] << '\n';
+
+##### Example, good
+
+    vector<int> vec = /*...*/;
+
+    for (gsl::index i = 0; i < vec.size(); i += 2)             // ok
+        cout << vec[i] << '\n';
+    for (gsl::index i = vec.size()-1; i >= 0; i -= 2)          // ok
         cout << vec[i] << '\n';
 
 ##### Note
 
 The built-in array uses signed subscripts.
 The standard-library containers use unsigned subscripts.
-Thus, no perfect and fully compatible solution is possible.
-Given the known problems with unsigned and signed/unsigned mixtures, better stick to (signed) integers.
+Thus, no perfect and fully compatible solution is possible (unless and until the standard-library containers change to use signed subscripts someday in the future).
+Given the known problems with unsigned and signed/unsigned mixtures, better stick to (signed) integers of a sufficient size, which is guaranteed by `gsl::index`.
 
 ##### Example
 
@@ -12785,7 +12936,7 @@ Given the known problems with unsigned and signed/unsigned mixtures, better stic
     struct My_container {
     public:
         // ...
-        T& operator[](int i);    // not unsigned
+        T& operator[](gsl::index i);    // not unsigned
         // ...
     };
 
@@ -12803,7 +12954,11 @@ Alternatives for users
 
 ##### Enforcement
 
-Very tricky as long as the standard-library containers get it wrong.
+* Very tricky as long as the standard-library containers get it wrong.
+* (To avoid noise) Do not flag on a mixed signed/unsigned comparison where one of the arguments is `sizeof` or a call to container `.size()` and the other is `ptrdiff_t`.
+
+
+
 
 # <a name="S-performance"></a>Per: Performance
 
@@ -12973,7 +13128,7 @@ We can do better (in C++98)
 
 Here, we use the compiler's knowledge about the size of the array, the type of elements, and how to compare `double`s.
 
-With C++11 plus [concepts](#???), we can do better still
+With C++11 plus [concepts](#SS-concepts), we can do better still
 
     // Sortable specifies that c must be a
     // random-access sequence of elements comparable with <
@@ -13041,7 +13196,7 @@ needed information back to the caller. Therefore, the standard library also offe
     template <class ForwardIterator, class T>
     ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T& val);
 
-`lower_bound` returns an iterator to the first match if any, otherwise `last`.
+`lower_bound` returns an iterator to the first match if any, otherwise to the first element greater than `val`, or `last` if no such element is found.
 
 However, `lower_bound` still doesn't return enough information for all uses, so the standard library also offers
 
@@ -13248,7 +13403,7 @@ Performance is very sensitive to cache performance and cache algorithms favor si
 
 ???
 
-# <a name="S-concurrency"></a>CP: Concurrency and Parallelism
+# <a name="S-concurrency"></a>CP: Concurrency and parallelism
 
 We often want our computers to do many tasks at the same time (or at least make them appear to do them at the same time).
 The reasons for doing so varies (e.g., wanting to wait for many events using only a single processor, processing many data streams simultaneously, or utilizing many hardware facilities)
@@ -13296,7 +13451,7 @@ Concurrency and parallelism rule summary:
 * [CP.8: Don't try to use `volatile` for synchronization](#Rconc-volatile)
 * [CP.9: Whenever feasible use tools to validate your concurrent code](#Rconc-tools)
 
-See also:
+**See also**:
 
 * [CP.con: Concurrency](#SScp-con)
 * [CP.par: Parallelism](#SScp-par)
@@ -13476,7 +13631,7 @@ Making `surface_readings` be `const` (with respect to this function) allow reaso
 
 Immutable data can be safely and efficiently shared.
 No locking is needed: You can't have a data race on a constant.
-See also [CP.mess: Message Passing](#SScp-mess) and [CP.31: prefer pass by value](#C#Rconc-data-by-value).
+See also [CP.mess: Message Passing](#SScp-mess) and [CP.31: prefer pass by value](#Rconc-data-by-value).
 
 ##### Enforcement
 
@@ -13627,7 +13782,7 @@ Concurrency rule summary:
 * [CP.42: Don't `wait` without a condition](#Rconc-wait)
 * [CP.43: Minimize time spent in a critical section](#Rconc-time)
 * [CP.44: Remember to name your `lock_guard`s and `unique_lock`s](#Rconc-name)
-* [CP.50: Define a `mutex` together with the data it protects](#Rconc-mutex)
+* [CP.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible](#Rconc-mutex)
 * ??? when to use a spinlock
 * ??? when to use `try_lock()`
 * ??? when to prefer `lock_guard` over `unique_lock`
@@ -14011,12 +14166,12 @@ Defining "small amount" precisely is impossible.
 ##### Example
 
     string modify1(string);
-    void modify2(shared_ptr<string>);
+    void modify2(string&);
 
     void fct(string& s)
     {
         auto res = async(modify1, s);
-        async(modify2, &s);
+        async(modify2, s);
     }
 
 The call of `modify1` involves copying two `string` values; the call of `modify2` does not.
@@ -14026,7 +14181,7 @@ If the string is short (say 10 characters), the call of `modify1` can be surpris
 essentially all the cost is in the `thread` switch. If the string is long (say 1,000,000 characters), copying it twice
 is probably not a good idea.
 
-Note that this argument has nothing to do with `sync` as such. It applies equally to considerations about whether to use
+Note that this argument has nothing to do with `async` as such. It applies equally to considerations about whether to use
 message passing or shared memory.
 
 ##### Enforcement
@@ -14048,7 +14203,7 @@ safe way to ensure proper deletion.
 
 ##### Note
 
-* A static object (e.g. a global) can be shared because it is not owned in the sense that some thread is responsible for it's deletion.
+* A static object (e.g. a global) can be shared because it is not owned in the sense that some thread is responsible for its deletion.
 * An object on free store that is never to be deleted can be shared.
 * An object owned by one thread can be safely shared with another as long as that second thread doesn't outlive the owner.
 
@@ -14267,7 +14422,7 @@ Flag all unnamed `lock_guard`s and `unique_lock`s.
 
 
 
-### <a name="Rconc-mutex"></a>P.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible
+### <a name="Rconc-mutex"></a>CP.50: Define a `mutex` together with the data it guards. Use `synchronized_value<T>` where possible
 
 ##### Reason
 
@@ -14663,7 +14818,7 @@ The rules are designed to help avoid several kinds of errors:
 * Resource leaks (including memory leaks)
 * Bounds errors
 * Lifetime errors (e.g., accessing an object after is has been `delete`d)
-* Complexity errors (logical errors make likely by overly complex expression of ideas)
+* Complexity errors (logical errors made likely by overly complex expression of ideas)
 * Interface errors (e.g., an unexpected value is passed through an interface)
 
 Error-handling rule summary:
@@ -14780,7 +14935,7 @@ C++ implementations tend to be optimized based on the assumption that exceptions
     int find_index(vector<string>& vec, const string& x)
     {
         try {
-            for (int i = 0; i < vec.size(); ++i)
+            for (gsl::index i = 0; i < vec.size(); ++i)
                 if (vec[i] == x) throw i;  // found x
         } catch (int i) {
             return i;
@@ -14948,7 +15103,7 @@ One strategy is to add a `valid()` operation to every resource handle:
 Obviously, this increases the size of the code, doesn't allow for implicit propagation of "exceptions" (`valid()` checks), and `valid()` checks can be forgotten.
 Prefer to use exceptions.
 
-**See also**: [Use of `noexcept`](#Se-noexcept).
+**See also**: [Use of `noexcept`](#Se-noexcept)
 
 ##### Enforcement
 
@@ -14960,7 +15115,7 @@ Prefer to use exceptions.
 
 To avoid interface errors.
 
-**See also**: [precondition rule](#Ri-pre).
+**See also**: [precondition rule](#Ri-pre)
 
 ### <a name="Re-postcondition"></a>E.8: State your postconditions
 
@@ -14968,7 +15123,7 @@ To avoid interface errors.
 
 To avoid interface errors.
 
-**See also**: [postcondition rule](#Ri-post).
+**See also**: [postcondition rule](#Ri-post)
 
 ### <a name="Re-noexcept"></a>E.12: Use `noexcept` when exiting a function because of a `throw` is impossible or unacceptable
 
@@ -14988,7 +15143,7 @@ By declaring `compute` to be `noexcept`, we give the compiler and human readers 
 
 ##### Note
 
-Many standard-library functions are `noexcept` including all the standard-library functions "inherited" from the C standard library.
+Many standard-library functions are `noexcept` including all the standard-library functions "inherited" from the C Standard Library.
 
 ##### Example
 
@@ -15071,7 +15226,7 @@ A user-defined type is unlikely to clash with other people's exceptions.
             my_code();
             // ...
         }
-        catch(Bufferpool_exhausted) {
+        catch(const Bufferpool_exhausted&) {
             // ...
         }
     }
@@ -15117,7 +15272,7 @@ The standard-library classes derived from `exception` should be used only as bas
             my_code();
             // ...
         }
-        catch(runtime_error) {   // runtime_error means "input buffer too small"
+        catch(const runtime_error&) {   // runtime_error means "input buffer too small"
             // ...
         }
     }
@@ -15126,7 +15281,7 @@ The standard-library classes derived from `exception` should be used only as bas
 
 ##### Enforcement
 
-Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using an standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy is fine.
+Catch `throw` and `catch` of a built-in type. Maybe warn about `throw` and `catch` using a standard-library `exception` type. Obviously, exceptions derived from the `std::exception` hierarchy are fine.
 
 ### <a name="Re-exception-ref"></a>E.15: Catch exceptions from a hierarchy by reference
 
@@ -15155,6 +15310,10 @@ of - typically better still - a `const` reference:
     catch (const exception& e) { /* ... */ }
 
 Most handlers do not modify their exception and in general we [recommend use of `const`](#Res-const).
+
+##### Note
+
+To rethrow a caught exception use `throw;` not `throw e;`. Using `throw e;` would throw a new copy of `e` (sliced to the static type `std::exception`) instead of rethrowing the original exception of type `std::runtime_error`. (But keep [Don't try to catch every exception in every function](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-not-always) and [Minimize the use of explicit `try`/`catch`](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Re-catch) in mind.)
 
 ##### Enforcement
 
@@ -15358,7 +15517,7 @@ If we cannot throw an exception, we can simulate this RAII style of resource han
 
 The problem is of course that the caller now has to remember to test the return value.
 
-**See also**: [Discussion](#Sd-???).
+**See also**: [Discussion](#Sd-???)
 
 ##### Enforcement
 
@@ -15370,7 +15529,7 @@ Possible (only) for specific versions of this idea: e.g., test for systematic te
 
 If you can't do a good job at recovering, at least you can get out before too much consequential damage is done.
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Note
 
@@ -15388,7 +15547,7 @@ In such cases, "crashing" is simply leaving error handling to the next level of 
     {
         // ...
         p = static_cast<X*>(malloc(n, X));
-        if (p == nullptr) abort();     // abort if memory is exhausted
+        if (!p) abort();     // abort if memory is exhausted
         // ...
     }
 
@@ -15413,7 +15572,7 @@ Awkward
 
 Systematic use of any error-handling strategy minimizes the chance of forgetting to handle an error.
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Note
 
@@ -15557,9 +15716,9 @@ Also, the larger the program becomes the harder it is to apply an error-indicato
 
 We [prefer exception-based error handling](#Re-throw) and recommend [keeping functions short](#Rf-single).
 
-**See also**: [Discussion](#Sd-???).
+**See also**: [Discussion](#Sd-???)
 
-**See also**: [Returning multiple values](#Rf-out-multi).
+**See also**: [Returning multiple values](#Rf-out-multi)
 
 ##### Enforcement
 
@@ -15572,7 +15731,7 @@ Awkward.
 Global state is hard to manage and it is easy to forget to check it.
 When did you last test the return value of `printf()`?
 
-See also [Simulating RAII](#Re-no-throw-raii).
+**See also**: [Simulating RAII](#Re-no-throw-raii)
 
 ##### Example, bad
 
@@ -15659,7 +15818,7 @@ The "catch everything" handler ensured that the `std::exception`-handler will ne
 
 Flag all "hiding handlers".
 
-# <a name="S-const"></a>Con: Constants and Immutability
+# <a name="S-const"></a>Con: Constants and immutability
 
 You can't have a race condition on a constant.
 It is easier to reason about a program when many of the objects cannot change their values.
@@ -15773,7 +15932,7 @@ through non-`const` pointers.
 It is the job of the class to ensure such mutation is done only when it makes sense according to the semantics (invariants)
 it offers to its users.
 
-See also [Pimpl](#Ri-pimpl).
+**See also**: [Pimpl](#Ri-pimpl)
 
 ##### Enforcement
 
@@ -15863,9 +16022,9 @@ Templates can also be used for meta-programming; that is, programs that compose 
 A central notion in generic programming is "concepts"; that is, requirements on template arguments presented as compile-time predicates.
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1, you can uncomment them.
+If you use GCC 6.1 or later, you can uncomment them.
 
 Template use rule summary:
 
@@ -16020,9 +16179,9 @@ is to efficiently generalize operations/algorithms over a set of types with simi
 
 The `requires` in the comments are uses of `concepts`.
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1, you can uncomment them.
+If you use GCC 6.1 or later, you can uncomment them.
 
 ##### Enforcement
 
@@ -16213,9 +16372,9 @@ or equivalently and more succinctly:
 
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use GCC 6.1, you can uncomment them:
+If you use GCC 6.1 or later, you can uncomment them:
 
     template<typename Iter, typename Val>
         requires Input_iterator<Iter>
@@ -16285,9 +16444,9 @@ Hard.
 
 ##### Example (using TS concepts)
 
-    vector<string> v;
+    vector<string> v{ "abc", "xyz" };
     auto& x = v.front();     // bad
-    String& s = v.begin();   // good (String is a GSL concept)
+    String& s = v.front();   // good (String is a GSL concept)
 
 ##### Enforcement
 
@@ -16318,9 +16477,9 @@ The shorter versions better match the way we speak. Note that many templates don
 
 "Concepts" are defined in an ISO Technical specification: [concepts](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4553.pdf).
 A draft of a set of standard-library concepts can be found in another ISO TS: [ranges](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4569.pdf)
-Currently (July 2016), concepts are supported only in GCC 6.1.
+Concepts are supported in GCC 6.1 and later.
 Consequently, we comment out uses of concepts in examples; that is, we use them as formalized comments only.
-If you use a compiler that supports concepts (e.g., GCC 6.1), you can remove the `//`.
+If you use a compiler that supports concepts (e.g., GCC 6.1 or later), you can remove the `//`.
 
 ##### Enforcement
 
@@ -16334,7 +16493,7 @@ Concepts are meant to represent fundamental concepts in an application domain (h
 Similarly throwing together a set of syntactic constraints to be used for a the arguments for a single class or algorithm is not what concepts were designed for
 and will not give the full benefits of the mechanism.
 
-Obviously, defining concepts will be most useful for code that can use an implementation (e.g., GCC 6.1),
+Obviously, defining concepts will be most useful for code that can use an implementation (e.g., GCC 6.1 or later),
 but defining concepts is in itself a useful design technique and help catch conceptual errors and clean up the concepts (sic!) of an implementation.
 
 ### <a name="Rt-low"></a>T.20: Avoid "concepts" without meaningful semantics
@@ -17095,7 +17254,8 @@ Templates typically appear in header files so their context dependencies are mor
 Having a template operate only on its arguments would be one way of reducing the number of dependencies to a minimum, but that would generally be unmanageable.
 For example, an algorithm usually uses other algorithms and invoke operations that does not exclusively operate on arguments.
 And don't get us started on macros!
-See also [T.69](#Rt-customization)
+
+**See also**: [T.69](#Rt-customization)
 
 ##### Enforcement
 
@@ -17410,8 +17570,8 @@ Templating a class hierarchy that has many functions, especially many virtual fu
         // ...
     };
 
-    vector<int> vi;
-    vector<string> vs;
+    Vector<int> vi;
+    Vector<string> vs;
 
 It is probably a dumb idea to define a `sort` as a member function of a container, but it is not unheard of and it makes a good example of what not to do.
 
@@ -17442,7 +17602,7 @@ Assume that `Apple` and `Pear` are two kinds of `Fruit`s.
     void maul(Fruit* p)
     {
         *p = Pear{};     // put a Pear into *p
-        p[1] = Pear{};   // put a Pear into p[2]
+        p[1] = Pear{};   // put a Pear into p[1]
     }
 
     Apple aa [] = { an_apple, another_apple };   // aa contains Apples (obviously!)
@@ -17456,7 +17616,7 @@ If `sizeof(Apple) != sizeof(Pear)` the access to `aa[1]` will not be aligned to 
 We have a type violation and possibly (probably) a memory corruption.
 Never write such code.
 
-Note that `maul()` violates the a `T*` points to an individual object [Rule](#???).
+Note that `maul()` violates the a [`T*` points to an individual object rule](#Rf-ptr).
 
 **Alternative**: Use a proper (templatized) container:
 
@@ -17472,7 +17632,7 @@ Note that `maul()` violates the a `T*` points to an individual object [Rule](#??
 
     Apple& a0 = &va[0];   // a Pear?
 
-Note that the assignment in `maul2()` violated the no-slicing [Rule](#???).
+Note that the assignment in `maul2()` violated the [no-slicing rule](#Res-slice).
 
 ##### Enforcement
 
@@ -17643,7 +17803,7 @@ The syntax and techniques needed are pretty horrendous.
 ##### Reason
 
 Template metaprogramming is hard to get right, slows down compilation, and is often very hard to maintain.
-However, there are real-world examples where template metaprogramming provides better performance that any alternative short of expert-level assembly code.
+However, there are real-world examples where template metaprogramming provides better performance than any alternative short of expert-level assembly code.
 Also, there are real-world examples where template metaprogramming expresses the fundamental ideas better than run-time code.
 For example, if you really need AST manipulation at compile time (e.g., for optional matrix operation folding) there may be no other way in C++.
 
@@ -17986,7 +18146,7 @@ C rule summary:
 
 * [CPL.1: Prefer C++ to C](#Rcpl-C)
 * [CPL.2: If you must use C, use the common subset of C and C++, and compile the C code as C++](#Rcpl-subset)
-* [CPL.3: If you must use C for interfaces, use C++ in the code using such interfaces](#Rcpl-interface)
+* [CPL.3: If you must use C for interfaces, use C++ in the calling code using such interfaces](#Rcpl-interface)
 
 ### <a name="Rcpl-C"></a>CPL.1: Prefer C++ to C
 
@@ -18085,6 +18245,7 @@ Source file rule summary:
 * [SF.8: Use `#include` guards for all `.h` files](#Rs-guards)
 * [SF.9: Avoid cyclic dependencies among source files](#Rs-cycles)
 * [SF.10: Avoid dependencies on implicitly `#include`d names](#Rs-implicit)
+* [SF.11: Header files should be self-contained](#Rs-contained)
 
 * [SF.20: Use `namespace`s to express logical structure](#Rs-namespace)
 * [SF.21: Don't use an unnamed (anonymous) namespace in a header](#Rs-unnamed)
@@ -18235,9 +18396,12 @@ However
 
 * that only works for one file (at one level): Use that technique in a header included with other headers and the vulnerability reappears.
 * a namespace (an "implementation namespace") can protect against many context dependencies.
-* full protection and flexibility require [modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf).
-[See also](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf).
+* full protection and flexibility require modules.
 
+**See also**:
+
+* [Working Draft, Extensions to C++ for Modules](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4592.pdf)
+* [Modules, Componentization, and Transition](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0141r0.pdf)
 
 ##### Enforcement
 
@@ -18489,6 +18653,27 @@ This rule against implicit inclusion is not meant to prevent such deliberate agg
 Enforcement would require some knowledge about what in a header is meant to be "exported" to users and what is there to enable implementation.
 No really good solution is possible until we have modules.
 
+### <a name="Rs-contained"></a>SF.11: Header files should be self-contained
+
+##### Reason
+
+Usability, headers should be simple to use and work when included on their own.
+Headers should encapsulate the functionality they provide.
+Avoid clients of a header having to manage that header's dependencies.
+
+##### Example
+
+    #include "helpers.h"
+    // helpers.h depends on std::string and includes <string>
+
+##### Note
+
+Failing to follow this results in difficult to diagnose errors for clients of a header.
+
+##### Enforcement
+
+A test should verify that the header file itself compiles or that a cpp file which only includes the header file compiles.
+
 ### <a name="Rs-namespace"></a>SF.20: Use `namespace`s to express logical structure
 
 ##### Reason
@@ -18545,14 +18730,14 @@ So, it is likely that this library section of the guidelines will eventually gro
 
 << ??? We need another level of rule numbering ??? >>
 
-C++ Standard library component summary:
+C++ Standard Library component summary:
 
 * [SL.con: Containers](#SS-con)
 * [SL.str: String](#SS-string)
 * [SL.io: Iostream](#SS-io)
 * [SL.regex: Regex](#SS-regex)
 * [SL.chrono: Time](#SS-chrono)
-* [SL.C: The C standard library](#SS-clib)
+* [SL.C: The C Standard Library](#SS-clib)
 
 Standard-library rule summary:
 
@@ -18771,7 +18956,7 @@ Text manipulation is a huge topic.
 This section primarily tries to clarify `std::string`'s relation to `char*`, `zstring`, `string_view`, and `gsl::string_span`.
 The important issue of non-ASCII character sets and encodings (e.g., `wchar_t`, Unicode, and UTF-8) will be covered elsewhere.
 
-See also [regular expressions](#SS-regex).
+**See also**: [regular expressions](#SS-regex)
 
 Here, we use "sequence of characters" or "string" to refer to a sequence of characters meant to be read as text (somehow, eventually).
 We don't consider
@@ -18788,7 +18973,7 @@ String summary:
 * [SL.str.11: Use `gsl::string_span` rather than `std::string_view` when you need to mutate a string](#Rstr-span)
 * [SL.str.12: Use the `s` suffix for string literals meant to be standard-library `string`s](#Rstr-s)
 
-See also
+**See also**:
 
 * [F.24 span](#Rf-range)
 * [F.25 zstring](#Rf-zstring)
@@ -19026,13 +19211,13 @@ Direct expression of an idea minimizes mistakes.
 
     auto pp1 = make_pair("Tokyo", 9.00);         // {C-style string,double} intended?
     pair<string, double> pp2 = {"Tokyo", 9.00};  // a bit verbose
-    auto pp3 = make_pair("Tokyo"s, 9.00);        // {std::string,double}    // C++17
+    auto pp3 = make_pair("Tokyo"s, 9.00);        // {std::string,double}    // C++14
     pair pp4 = {"Tokyo"s, 9.00};                 // {std::string,double}    // C++17
 
 
 ##### Note
 
-C++17
+C++14
 
 ##### Enforcement
 
@@ -19194,11 +19379,11 @@ It supports a variety of regular expression pattern conventions.
 outputting time in various units.
 It provides clocks for registering `time_points`.
 
-## <a name="SS-clib"></a>SL.C: The C standard library
+## <a name="SS-clib"></a>SL.C: The C Standard Library
 
 ???
 
-C standard library rule summary:
+C Standard Library rule summary:
 
 * [S.C.1: Don't use setjmp/longjmp](#Rclib-jmp)
 * [???](#???)
@@ -19216,7 +19401,7 @@ Flag all occurrences of `longjmp`and `setjmp`
 
 
 
-# <a name="S-A"></a>A: Architectural Ideas
+# <a name="S-A"></a>A: Architectural ideas
 
 This section contains ideas about higher-level architectural ideas and libraries.
 
@@ -19371,7 +19556,7 @@ Of course many simple functions will naturally have just one `return` because of
 
     int index(const char* p)
     {
-        if (p == nullptr) return -1;  // error indicator: alternatively "throw nullptr_error{}"
+        if (!p) return -1;  // error indicator: alternatively "throw nullptr_error{}"
         // ... do a lookup to find the index for p
         return i;
     }
@@ -19381,7 +19566,7 @@ If we applied the rule, we'd get something like
     int index2(const char* p)
     {
         int i;
-        if (p == nullptr)
+        if (!p)
             i = -1;  // error indicator
         else {
             // ... do a lookup to find the index for p
@@ -19783,9 +19968,9 @@ An implementation of this profile shall recognize the following patterns in sour
 
 Type safety profile summary:
 
-* <a name="Pro-type-avoidcasts"></a>Type.1: [Avoid casts](#Res-casts):  
-<a name="Pro-type-reinterpretcast">a. </a>Don't use `reinterpret_cast`; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
-<a name="Pro-type-arithmeticcast">b. </a>Don't use `static_cast` for arithmetic types; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).  
+* <a name="Pro-type-avoidcasts"></a>Type.1: [Avoid casts](#Res-casts):
+<a name="Pro-type-reinterpretcast">a. </a>Don't use `reinterpret_cast`; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
+<a name="Pro-type-arithmeticcast">b. </a>Don't use `static_cast` for arithmetic types; A strict version of [Avoid casts](#Res-casts) and [prefer named casts](#Res-casts-named).
 <a name="Pro-type-identitycast">c. </a>Don't cast between pointer types where the source type and the target type are the same; A strict version of [Avoid casts](#Res-casts).
 <a name="Pro-type-implicitpointercast">d. </a>Don't cast between pointer types when the conversion could be implicit; A strict version of [Avoid casts](#Res-casts).
 * <a name="Pro-type-downcast"></a>Type.2: Don't use `static_cast` to downcast:
@@ -19891,7 +20076,7 @@ Summary of GSL components:
 
 We plan for a "ISO C++ standard style" semi-formal specification of the GSL.
 
-We rely on the ISO C++ standard library and hope for parts of the GSL to be absorbed into the standard library.
+We rely on the ISO C++ Standard Library and hope for parts of the GSL to be absorbed into the standard library.
 
 ## <a name="SS-views"></a>GSL.view: Views
 
@@ -19964,16 +20149,17 @@ Use `not_null<zstring>` for C-style strings that cannot be `nullptr`. ??? Do we 
 These assertions are currently macros (yuck!) and must appear in function definitions (only)
 pending standard committee decisions on contracts and assertion syntax.
 See [the contract proposal](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0380r1.pdf); using the attribute syntax,
-for example, `Expects(p != nullptr)` will become `[[expects: p != nullptr]]`.
+for example, `Expects(p)` will become `[[expects: p]]`.
 
 ## <a name="SS-utilities"></a>GSL.util: Utilities
 
-* `finally`       // `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
-* `narrow_cast`   // `narrow_cast<T>(x)` is `static_cast<T>(x)`
-* `narrow`        // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
-* `[[implicit]]`  // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
-* `move_owner`    // `p = move_owner(q)` means `p = q` but ???
+* `finally`        // `finally(f)` makes a `final_action{f}` with a destructor that invokes `f`
+* `narrow_cast`    // `narrow_cast<T>(x)` is `static_cast<T>(x)`
+* `narrow`         // `narrow<T>(x)` is `static_cast<T>(x)` if `static_cast<T>(x) == x` or it throws `narrowing_error`
+* `[[implicit]]`   // "Marker" to put on single-argument constructors to explicitly make them non-explicit.
+* `move_owner`     // `p = move_owner(q)` means `p = q` but ???
 * `joining_thread` // a RAII style version of `std::thread` that joins.
+* `index`          // a type to use for all container and array indexing (currently an alias for `ptrdiff_t`)
 
 ## <a name="SS-gsl-concepts"></a>GSL.concept: Concepts
 
@@ -20026,11 +20212,11 @@ Naming and layout rules:
 * [NL.2: State intent in comments](#Rl-comments-intent)
 * [NL.3: Keep comments crisp](#Rl-comments-crisp)
 * [NL.4: Maintain a consistent indentation style](#Rl-indent)
-* [NL.5: Don't encode type information in names](#Rl-name-type)
+* [NL.5: Avoid encoding type information in names](#Rl-name-type)
 * [NL.7: Make the length of a name roughly proportional to the length of its scope](#Rl-name-length)
 * [NL.8: Use a consistent naming style](#Rl-name)
 * [NL.9: Use `ALL_CAPS` for macro names only](#Rl-all-caps)
-* [NL.10: Avoid CamelCase](#Rl-camel)
+* [NL.10: Prefer `underscore_style` names](#Rl-camel)
 * [NL.11: Make literals readable](#Rl-literals)
 * [NL.15: Use spaces sparingly](#Rl-space)
 * [NL.16: Use a conventional class member declaration order](#Rl-order)
@@ -20088,7 +20274,7 @@ Code says what is done, not what is supposed to be done. Often intent can be sta
 
 ##### Note
 
-If the comment and the code disagrees, both are likely to be wrong.
+If the comment and the code disagree, both are likely to be wrong.
 
 ### <a name="Rl-comments-crisp"></a>NL.3: Keep comments crisp
 
@@ -20133,7 +20319,7 @@ Always indenting the statement after `if (...)`, `for (...)`, and `while (...)` 
 
 Use a tool.
 
-### <a name="Rl-name-type"></a>NL.5: Don't encode type information in names
+### <a name="Rl-name-type"></a>NL.5: Avoid encoding type information in names
 
 ##### Rationale
 
@@ -20146,8 +20332,16 @@ Minimize unintentional conversions.
     void print_int(int i);
     void print_string(const char*);
 
-    print_int(1);   // OK
-    print_int(x);   // conversion to int if x is a double
+    print_int(1);          // repetitive, manual type matching
+    print_string("xyzzy"); // repetitive, manual type matching
+
+##### Example, good
+
+    void print(int i);
+    void print(string_view);    // also works on any string-like sequence
+
+    print(1);              // clear, automatic type matching
+    print("xyzzy");        // clear, automatic type matching
 
 ##### Note
 
@@ -20157,7 +20351,22 @@ Names with types encoded are either verbose or cryptic.
     prints  // print a C-style string
     printi  // print an int
 
-PS. Hungarian notation is evil (at least in a strongly statically-typed language).
+Requiring techniques like Hungarian notation to encode a type in a name is needed in C, but is generally unnecessary and actively harmful in a strongly statically-typed language like C++, because the annotations get out of date (the warts are just like comments and rot just like them) and they interfere with good use of the language (use the same name and overload resolution instead).
+
+##### Note
+
+Some styles use very general (not type-specific) prefixes to denote the general use of a variable.
+
+    auto p = new User();
+    auto p = make_unique<User>();
+    // note: "p" is not being used to say "raw pointer to type User,"
+    //       just generally to say "this is an indirection"
+
+    auto cntHits = calc_total_of_hits(/*...*/);
+    // note: "cnt" is not being used to encode a type,
+    //       just generally to say "this is a count of something"
+
+This is not harmful and does not fall under this guideline because it does not encode type information.
 
 ##### Note
 
@@ -20168,7 +20377,7 @@ Some styles distinguishes members from local variable, and/or from global variab
         S(int m) :m_{abs(m)} { }
     };
 
-This is not evil.
+This is not harmful and does not fall under this guideline because it does not encode type information.
 
 ##### Note
 
@@ -20176,13 +20385,13 @@ Like C++, some styles distinguishes types from non-types.
 For example, by capitalizing type names, but not the names of functions and variables.
 
     typename<typename T>
-    class Hash_tbl {   // maps string to T
+    class HashTable {   // maps string to T
         // ...
     };
 
-    Hash_tbl<int> index;
+    HashTable<int> index;
 
-This is not evil.
+This is not harmful and does not fall under this guideline because it does not encode type information.
 
 ### <a name="Rl-name-length"></a>NL.7: Make the length of a name roughly proportional to the length of its scope
 
@@ -20281,12 +20490,11 @@ This rule applies to non-macro symbolic constants:
 * Flag macros with lower-case letters
 * Flag `ALL_CAPS` non-macro names
 
-### <a name="Rl-camel"></a>NL.10: Avoid CamelCase
+### <a name="Rl-camel"></a>NL.10: Prefer `underscore_style` names
 
 ##### Reason
 
-The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ standard library.
-If you prefer CamelCase, you have to choose among different flavors of camelCase.
+The use of underscores to separate parts of a name is the original C and C++ style and used in the C++ Standard Library.
 
 ##### Note
 
@@ -20686,7 +20894,7 @@ No. The GSL exists only to supply a few types and aliases that are not currently
 
 ### <a name="Faq-gsl-string-view"></a>FAQ.55: If you're using the standard types where available, why is the GSL `string_span` different from the `string_view` in the Library Fundamentals 1 Technical Specification and C++17 Working Paper? Why not just use the committee-approved `string_view`?
 
-The consensus on the taxonomy of views for the C++ standard library was that "view" means "read-only", and "span" means "read/write". The read-only `string_view` was the first such component to complete the standardization process, while `span` and `string_span` are currently being considered for standardization.
+The consensus on the taxonomy of views for the C++ Standard Library was that "view" means "read-only", and "span" means "read/write". The read-only `string_view` was the first such component to complete the standardization process, while `span` and `string_span` are currently being considered for standardization.
 
 ### <a name="Faq-gsl-owner"></a>FAQ.56: Is `owner` the same as the proposed `observer_ptr`?
 
@@ -20788,7 +20996,7 @@ If the class definition and the constructor body are in separate files, the long
 
 **References**:
 
-[\[Cline99\]](#Cline99) §22.03-11, [\[Dewhurst03\]](Dewhurst03) §52-53, [\[Koenig97\]](#Koenig97) §4, [\[Lakos96\]](#Lakos96) §10.3.5, [\[Meyers97\]](#Meyers97) §13, [\[Murray93\]](#Murray93) §2.1.3, [\[Sutter00\]](#Sutter00) §47
+[\[Cline99\]](#Cline99) §22.03-11, [\[Dewhurst03\]](#Dewhurst03) §52-53, [\[Koenig97\]](#Koenig97) §4, [\[Lakos96\]](#Lakos96) §10.3.5, [\[Meyers97\]](#Meyers97) §13, [\[Murray93\]](#Murray93) §2.1.3, [\[Sutter00\]](#Sutter00) §47
 
 ### <a name="Sd-init"></a>Discussion: Use of `=`, `{}`, and `()` as initializers
 
@@ -20934,7 +21142,7 @@ In general, however, avoid concrete base classes (see Item 35). For example, `un
 
 ### <a name="Sd-never-fail"></a>Discussion: Destructors, deallocation, and swap must never fail
 
-Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ standard library. Most destructors are now implicitly `noexcept` by default.
+Never allow an error to be reported from a destructor, a resource deallocation function (e.g., `operator delete`), or a `swap` function using `throw`. It is nearly impossible to write useful code if these operations can fail, and even if something does go wrong it nearly never makes any sense to retry. Specifically, types whose destructors may throw an exception are flatly forbidden from use with the C++ Standard Library. Most destructors are now implicitly `noexcept` by default.
 
 ##### Example
 
@@ -21249,7 +21457,9 @@ To provide statically type-safe manipulation of elements.
 
 ##### Reason
 
-To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime. See also [F.20, the general item about "out" output values](#Rf-out).
+To simplify code and eliminate a need for explicit memory management. To bring an object into a surrounding scope, thereby extending its lifetime.
+
+**See also**: [F.20, the general item about "out" output values](#Rf-out)
 
 ##### Example
 
@@ -21324,7 +21534,7 @@ Clang-tidy has a set of rules that specifically enforce the C++ Core Guidelines.
 
 ### <a name="St-cppcorecheck"></a>Tools: [CppCoreCheck](https://docs.microsoft.com/en-us/visualstudio/code-quality/using-the-cpp-core-guidelines-checkers)
 
-The Microsoft compiler's C++ code analysis contains a set of rules specifically aimed at enforcement of the C++ Core Guidelines. 
+The Microsoft compiler's C++ code analysis contains a set of rules specifically aimed at enforcement of the C++ Core Guidelines.
 
 # <a name="S-glossary"></a>Glossary
 
@@ -21340,7 +21550,7 @@ More information on many topics about C++ can be found on the [Standard C++ Foun
 * *address*: a value that allows us to find an object in a computer's memory.
 * *algorithm*: a procedure or formula for solving a problem; a finite series of computational steps to produce a result.
 * *alias*: an alternative way of referring to an object; often a name, pointer, or reference.
-* *API*: Application Programming Interface, a set of methods that form the communication between various software components. Contrast with ABI.
+* *API*: Application Programming Interface, a set of functions that form the communication between various software components. Contrast with ABI.
 * *application*: a program or a collection of programs that is considered an entity by its users.
 * *approximation*: something (e.g., a value or a design) that is close to the perfect or ideal (value or design).
   Often an approximation is a result of trade-offs among ideals.
